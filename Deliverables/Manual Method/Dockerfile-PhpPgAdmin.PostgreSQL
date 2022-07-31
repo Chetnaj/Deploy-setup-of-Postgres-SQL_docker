@@ -1,0 +1,37 @@
+FROM ubuntu:22.04
+#PhpPgAdmin
+
+LABEL maintainer "ReleaseUbuntu22.04Dock"
+
+RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/Paris" apt update && apt upgrade -y
+
+RUN DEBIAN_FRONTEND=noninteractive TZ=Europe/Paris apt-get -y install tzdata
+
+RUN apt update && apt install -yqq apt-utils \
+            bc  \
+            build-essential  \
+            cmake  \
+            curl  \
+            g++  \
+            screen  \
+            git  \
+            unzip  \
+            vim  \
+            wget  \
+            openssh-server
+            
+RUN apt-get clean && apt-get autoremove 
+RUN apt-get install phppgadmin -y
+RUN echo "Require all granted" >> /etc/apache2/conf-available/phpadmin.conf
+RUN service apache2 restart
+RUN useradd -ms /bin/bash srinath
+RUN echo srinath:azerty | chpasswd
+RUN usermod -G sudo srinath
+RUN mkdir -m 777 -pv /DEV/ /workspace/
+RUN cd /DEV/ && git clone https://github.com/facebookresearch/fastText.git && cd fastText && git pull && mkdir build && cd build && cmake .. && make -j40 && make install
+
+
+
+
+
+
